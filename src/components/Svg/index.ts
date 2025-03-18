@@ -1,0 +1,8 @@
+export { default as ArrowIcon } from './icons/Arrow'
+export { default as ArrowLineIcon } from './icons/ArrowLine'
+export { default as ArrowLine2Icon } from './icons/ArrowLine2'
+export { default as TriangleIcon } from './icons/Triangle'
+export { default as SuccessIcon } from './icons/Success'
+export { default as CloseIcon } from './icons/Close'
+export { default as MenuIcon } from './icons/Menu'
+export { default as TokenLogoIcon } from './icons/TokenLogo'

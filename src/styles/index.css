@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #000;
+  color: #fff;
+  font-family: 'JetBrainsMono', sans-serif;
+}
+.text-shadow-white {
+  text-shadow: #fff 1px 1.5px;
+}
+.text-shadow-black {
+  text-shadow: #000 1px 1.5px;
+}
