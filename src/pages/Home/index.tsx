@@ -33,9 +33,10 @@ const labels: {
 const times = Array.from({ length: 18 }, (_, i) => i + 1)
 
 export default function Home() {
+  const [showSuccessCard, setShowSuccessCard] = useState(false)
   const [investAmount, setInvestAmount] = useState('')
   const [countdown, setCountdown] = useState(getTimeDiff(Date.now(), GrantConfig.endTime))
-  const [investResult, setInvestResult] = useState<{ hash: string; amount: bigint }>()
+  // const [investResult, setInvestResult] = useState<{ hash: string; amount: bigint }>()
   const [failed, setFailed] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -114,7 +115,8 @@ export default function Home() {
 
       await waitForTransactionReceipt(config, { hash: hash })
 
-      setInvestResult({ hash, amount: parsedInvestAmount })
+      // setInvestResult({ hash, amount: parsedInvestAmount })
+      setShowSuccessCard(true)
       setInvestAmount('')
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -236,7 +238,12 @@ export default function Home() {
           <div className='text-sm font-semibold'>Invest Amount</div>
           <div className='flex md:flex-row flex-col mt-3'>
             <div className='flex flex-auto items-center bg-white h-12 px-3'>
-              <Input className='h-12 text-black' value={investAmount} placeholder={`Up to ${formatEther(GrantConfig.maxAmount)} BNB`} onUserInput={setInvestAmount} />
+              <Input
+                className='h-12 text-black'
+                value={investAmount}
+                placeholder={`Up to ${formatEther(GrantConfig.maxAmount)} BNB`}
+                onUserInput={setInvestAmount}
+              />
               <span className='font-semibold text-black'>BNB</span>
             </div>
             <div className='md:ml-3 mt-4 md:mt-0'>
@@ -249,33 +256,35 @@ export default function Home() {
               )}
             </div>
           </div>
-          <ErrorCard error={error} />
-          <ErrorCard error={failed ? 'Submit Failed' : undefined} />
-          <SuccessCard tips={investResult ? 'Successfully Submitted' : undefined} />
+          <ErrorCard error={error} visible={error ? true : false} />
+          <ErrorCard autoHide error={'Submit Failed'} visible={failed} onChange={setFailed} />
+          <SuccessCard tips={'Successfully Submitted'} visible={showSuccessCard} onChange={setShowSuccessCard} />
         </div>
       </div>
 
-      <div className='bg-[#181921] mt-3 p-6 md:w-[560px] mx-auto'>
-        <div className='flex items-center'>
-          <TokenLogoIcon className='flex-[0_0_40px]'/>
-          <div className='ml-3'>
-            <div className='text-xs text-[#8D8E9B]'>My Allocation</div>
-            <div className='text-sm text-[#ECF0F2]'>Being calculated and will be determined after launch.</div>
+      {userInvest && userInvest.amount > 0 ? (
+        <div className='bg-[#181921] mt-3 p-6 md:w-[560px] mx-auto'>
+          <div className='flex items-center'>
+            <TokenLogoIcon className='flex-[0_0_40px]' />
+            <div className='ml-3'>
+              <div className='text-xs text-[#8D8E9B]'>My Allocation</div>
+              <div className='text-sm text-[#ECF0F2]'>Being calculated and will be determined after launch.</div>
+            </div>
+          </div>
+          <div className='flex items-center justify-between mt-4'>
+            <div className='text-xs text-[#8D8E9B]'>Invested Funds</div>
+            <div className='text-xs text-right'>{userInvest ? formatEther(userInvest.amount) : '-'} BNB</div>
+          </div>
+          <div className='flex items-center justify-between mt-2'>
+            <div className='text-xs text-[#8D8E9B]'>Token Receipt</div>
+            <div className='text-xs text-right'>In Progress</div>
+          </div>
+          <div className='flex items-center justify-between mt-2'>
+            <div className='text-xs text-[#8D8E9B]'>PancakeSwap Trading Open Time</div>
+            <div className='text-xs text-right'>In Progress</div>
           </div>
         </div>
-        <div className='flex items-center justify-between mt-4'>
-          <div className='text-xs text-[#8D8E9B]'>Invested Funds</div>
-          <div className='text-xs text-right'>{userInvest ? formatEther(userInvest.amount) : '-'} BNB</div>
-        </div>
-        <div className='flex items-center justify-between mt-2'>
-          <div className='text-xs text-[#8D8E9B]'>Token Receipt</div>
-          <div className='text-xs text-right'>In Progress</div>
-        </div>
-        <div className='flex items-center justify-between mt-2'>
-          <div className='text-xs text-[#8D8E9B]'>PancakeSwap Trading Open Time</div>
-          <div className='text-xs text-right'>In Progress</div>
-        </div>
-      </div>
+      ) : null}
     </div>
   )
 }
